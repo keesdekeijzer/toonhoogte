@@ -14,10 +14,18 @@ from tkinter import filedialog as fd
 Eerste versie
 """
 
+"""
+# versie 2026-01-05 18:44
+pop-ups na invoeren bestandsnamen verwijderd
+controle op wel of niet ingevoerde bestandsnamen toegevoegd
+"""
 
 # toonhoogte - pitch
 
 # (ffmpeg moet ook geinstalleerd zijn)
+
+invoer = ''
+uitvoer = ''
 
 def bestandsnaam_opschonen(naam):
     naam = naam.replace('(','_')
@@ -38,9 +46,21 @@ def start_knop():
     hoofdprogramma()
 
 def hoofdprogramma():
-    print(f"invoer: {invoer}\nuitvoer: {uitvoer}\ntoonhoogte: {toonhoogte.get()}")
-    print(pas_aan(invoer, uitvoer, toonhoogte))
-    print(f"invoer: {invoer}\nuitvoer: {uitvoer}\ntoonhoogte: {toonhoogte.get()}")
+    if invoer:
+        if uitvoer:
+            print(f"invoer: {invoer}\nuitvoer: {uitvoer}\ntoonhoogte: {toonhoogte.get()}")
+            print(pas_aan(invoer, uitvoer, toonhoogte))
+            print(f"invoer: {invoer}\nuitvoer: {uitvoer}\ntoonhoogte: {toonhoogte.get()}")
+        else:
+            showinfo(
+                title='Geen uitvoer ingesteld!',
+                message="Kies eerst een uitvoerbestand!"
+            )
+    else:
+        showinfo(
+            title='Geen invoer ingesteld!',
+            message="Kies eerst een invoerbestand!"
+        )
 
 def kies_bestand_invoer():
     filetypes = (
@@ -53,10 +73,6 @@ def kies_bestand_invoer():
         initialdir='.',
         filetypes=filetypes)
 
-    showinfo(
-        title='Selected File',
-        message=bestand
-    )
     label1bestand.configure(text=bestand)
     return bestand
 
@@ -71,11 +87,12 @@ def kies_bestand_uitvoer():
         title='Kies een mp3',
         defaultextension=".mp3",
         filetypes=filetypes)
-
-    showinfo(
-        title='Selected File',
-        message=bestand
-    )
+    if os.path.isfile(bestand):
+        showinfo(
+            title='Bestand bestaat al',
+            message=f'{bestand} bestaat al, kies een andere naam'
+        )
+        return
     label2bestand.configure(text=bestand)
     return bestand
 
@@ -87,7 +104,6 @@ def kies_invoer():
 def kies_uitvoer():
     global uitvoer
     uitvoer = kies_bestand_uitvoer()
-    #uitvoer = './test-aangepast.mp3'
 
 
 
